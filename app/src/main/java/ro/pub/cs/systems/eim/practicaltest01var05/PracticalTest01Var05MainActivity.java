@@ -1,6 +1,7 @@
 package ro.pub.cs.systems.eim.practicaltest01var05;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,6 +26,13 @@ public class PracticalTest01Var05MainActivity extends AppCompatActivity {
 
     StringBuilder currentString;
 
+    int threshold;
+
+    private IntentFilter intentFilter = new IntentFilter();
+
+    private MessageBroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,35 +47,62 @@ public class PracticalTest01Var05MainActivity extends AppCompatActivity {
         currentStringTextView = findViewById(R.id.result_text);
         currentString = new StringBuilder();
         totalPush = 0;
+        threshold = 5;
+        intentFilter.addAction(Intent.ACTION_BATTERY_LOW);
 
         topLeftButton.setOnClickListener(view -> {
             currentString.append("Top Left,");
             currentStringTextView.setText(currentString.toString());
             totalPush++;
+            if(totalPush > threshold) {
+                Intent intent = new Intent(this, PracticalTest01Var05Service.class);
+                intent.putExtra("sablon", currentString.toString());
+                getApplicationContext().startService(intent);
+            }
         });
 
         topRightButton.setOnClickListener(view -> {
             currentString.append("Top Right,");
             currentStringTextView.setText(currentString.toString());
             totalPush++;
+            if(totalPush > threshold) {
+                Intent intent = new Intent(this, PracticalTest01Var05Service.class);
+                intent.putExtra("sablon", currentString.toString());
+                getApplicationContext().startService(intent);
+            }
         });
 
         centerButton.setOnClickListener(view -> {
             currentString.append("Center,");
             currentStringTextView.setText(currentString.toString());
             totalPush++;
+            if(totalPush > threshold) {
+                Intent intent = new Intent(this, PracticalTest01Var05Service.class);
+                intent.putExtra("sablon", currentString.toString());
+                getApplicationContext().startService(intent);
+            }
         });
 
         bottomLeftButton.setOnClickListener(view -> {
             currentString.append("Bottom Left,");
             currentStringTextView.setText(currentString.toString());
             totalPush++;
+            if(totalPush > threshold) {
+                Intent intent = new Intent(this, PracticalTest01Var05Service.class);
+                intent.putExtra("sablon", currentString.toString());
+                getApplicationContext().startService(intent);
+            }
         });
 
         bottomRightButton.setOnClickListener(view -> {
             currentString.append("Bottom Right,");
             currentStringTextView.setText(currentString.toString());
             totalPush++;
+            if(totalPush > threshold) {
+                Intent intent = new Intent(this, PracticalTest01Var05Service.class);
+                intent.putExtra("sablon", currentString.toString());
+                getApplicationContext().startService(intent);
+            }
         });
 
         secondActivityButton.setOnClickListener(view -> {
@@ -75,6 +110,25 @@ public class PracticalTest01Var05MainActivity extends AppCompatActivity {
             intent.putExtra("sablon", currentString.toString());
             startActivityForResult(intent, 1);
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(messageBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(messageBroadcastReceiver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Intent intent = new Intent(this, PracticalTest01Var05Service.class);
+        stopService(intent);
+        super.onDestroy();
     }
 
     @Override
